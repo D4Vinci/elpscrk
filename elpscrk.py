@@ -1,6 +1,4 @@
 #Author:D4Vinci
-#A Script That Looks Like The BruteForce Script That Eliot Used it in Mr.Robot Series Episode 01 :D :v
-#For Any Advice Contact Me At : fb/kareem.shoair
 
 import itertools,time,sys,threading
 from time import gmtime, strftime
@@ -9,6 +7,7 @@ m1=[];m2=[]
 f1=[];f2=[];f3=[];f4=[]
 ff5=[];ff6=[];ff7=[];ff8=[];ff9=[];ff10=[];ff11=[];ff12=[]
 start_time = time.time()
+
 def cw(lista,n):             #split one list to two
     return lista[:len(lista)/n],lista[len(lista)/n:]
 
