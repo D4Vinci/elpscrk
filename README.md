@@ -1,11 +1,16 @@
 # elpscrk
-A Script That Looks Like The BruteForce Script That Eliot Used it in Mr.Robot Series Episode 01 :D :v
+A Common User Passwords generator script that looks like the tool Eliot used it in Mr.Robot Series Episode 01 :D :v
+
+>Of course it's better the cupp tool because it generates all the possible passwords that cupp doesn't generates
+
 # Installation
- Just type in the terminal
-```sh
-$ git clone https://github.com/D4Vinci/elpscrk.git
+
 ```
+git clone https://github.com/D4Vinci/elpscrk.git
+```
+
 # Usage
-Just open the script and type the info you know as in the screenshot
+Just open the script and type the info you know as in the screenshot and as Eliot did in MrRobot
+
 # Screenshot
-![alt tag](https://cloud.githubusercontent.com/assets/20604835/17073186/b26c11b0-506e-11e6-8b77-689c15ea4d2c.jpg)
+![alt tag](https://github.com/D4Vinci/elpscrk/blob/master/b26c11b0-506e-11e6-8b77-689c15ea4d2c.jpg)
