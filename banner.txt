@@ -1,0 +1,6 @@
+
+,---.|   {G}By: D4Vinci{end}          |     {G}Generation Recipes:{end}
+|--- |    ,---.,---.,---.,---.|__/    {G}Number range  : {end}{num}, {G}Years range: {end}{year}
+|    |    |   |`---.|    |    |  \    {G}Special chars : {end}{chars}, {G}Leet permutations: {end}{leet}
+`---'`---'|---'`---'`---'`    `   `   {G}Verbose mode : {end}{verbose}, {G}Export file : {end}{export}
+   {G}v{ver}   | {G}Password stats: Min={min} Max={max} Complication level set for: {level}{end}
