@@ -55,7 +55,6 @@ class main_ganerator:
 	def __input(self, prompt):
 		result = []
 		while True:
-			# A workaround because colorama for some reason not print colored texts with input() !!
 			print(f"{G}[{reset + B}>{reset + G}] {prompt}{reset}", end="")
 			data = input()
 			print(f"{reset}", end="")
@@ -69,6 +68,7 @@ class main_ganerator:
 						if smaller_part:
 							result.append(smaller_part)
 			return result
+
 
 	def __pwd_check(self, pwd):
 		if (len(pwd) >= self.minimum_length) and (len(pwd) <= self.maximum_length) and (pwd not in self.total_result):
@@ -152,64 +152,54 @@ class main_ganerator:
 			print(f"[+] Results exported to {self.export_file}!")
 
 	def perms_generator(self):
-		# Common passwords before starting the permutations
 		self.__commonPerms()
-		# Now let's start the permutations
 		mixes = [
-			# names only
 			self.__simple_perm(self.names.words, ),
-			# names and dates mixes
 			self.__perms(self.names.words, others=(self.dates.days, self.dates.months, self.dates.years), ),
-			# names and phones mixes
 			self.__perm(self.names.one, self.dates.joined_dates, ),
 			self.__perm(self.names.two, self.dates.joined_dates, ),
-			self.__perms(self.names.words,
-						 others=(self.phones.national, self.phones.first_four, self.phones.last_four), ),
+			self.__perms(self.names.words, others=(self.phones.national, self.phones.first_four, self.phones.last_four), ),
 			self.__perm(self.names.one, self.phones.national, ),
 			self.__perm(self.names.two, self.phones.national, ),
 			self.__perms(self.names.one, others=(self.phones.first_four, self.phones.last_four), ),
 			self.__perms(self.names.two, others=(self.phones.first_four, self.phones.last_four), ),
-			# names, dates and phones
 			self.__perm(self.names.words, self.dates.years, self.phones.first_four, ),
 			self.__perm(self.names.words, self.dates.years, self.phones.last_four, ),
-			self.__perm(self.names.words, self.dates.years, self.phones.national, )]
-		# Now for the mixes based on old passwords
+			self.__perm(self.names.words, self.dates.years, self.phones.national, )
+		]
+
+		# Added combination of names and nicknames
+		for name in self.names.words:
+			for nickname in self.nicknames:
+				combined_name_nickname = name + nickname
+				if self.__pwd_check(combined_name_nickname):
+					self.total_result.append(combined_name_nickname)
+		
 		if self.old_passwords.passwords:
 			for pwd in self.old_passwords.passwords:
-				# Here we will not get all permutations because people tend to just append new things to old passwords without changing a lot!
 				for iterator in (data_plus.nums_range(100), data_plus.years(1900), data_plus.chars,):
-					mixes.append(
-						("".join(p) for one in iterator for p in perm((pwd, one), 2) if self.__pwd_check("".join(p))))
+					mixes.append(("".join(p) for one in iterator for p in perm((pwd, one), 2) if self.__pwd_check("".join(p))))
 			mixes.append(self.__perm(self.old_passwords.passwords, self.names.words, ))
-			mixes.append(self.__perms(self.old_passwords.passwords,
-									  others=(self.dates.days, self.dates.months, self.dates.years), ))
-			mixes.append(self.__perms(self.old_passwords.passwords,
-									  others=(self.phones.national, self.phones.first_four, self.phones.last_four), ))
-		#######################################################################
-		# More complicated not very common or realistic
+			mixes.append(self.__perms(self.old_passwords.passwords, others=(self.dates.days, self.dates.months, self.dates.years), ))
+			mixes.append(self.__perms(self.old_passwords.passwords, others=(self.phones.national, self.phones.first_four, self.phones.last_four), ))
+		
 		if self.shit_level >= 4:
-			# names and dates
 			mixes.append(self.__perm(self.names.words, self.dates.days, self.dates.months, self.dates.years))
 			mixes.append(self.__perm(self.names.one, self.names.two, self.dates.joined_dates))
-			# names and phones
 			mixes.append(self.__perm(self.names.words, self.phones.first_four, self.phones.last_four))
 			mixes.append(self.__perm(self.names.one, self.names.two, self.phones.national))
 			mixes.append(self.__perm(self.names.one, self.names.two, self.phones.first_four, self.phones.last_four, ))
-			# names, dates and phones
-			mixes.append(
-				self.__perm(self.names.words, self.dates.years, self.phones.first_four, self.phones.last_four, ))
+			mixes.append(self.__perm(self.names.words, self.dates.years, self.phones.first_four, self.phones.last_four, ))
 			mixes.append(self.__perm(self.names.words, self.dates.days, self.dates.months, self.phones.national, ))
-			# phones, dates...etc numbers only different variations
 			mixes.append(self.__perm(self.dates.days, self.dates.months, self.dates.years, ))
 			mixes.append(self.__perm(self.phones.national, self.dates.years, ))
 			mixes.append(self.__perm(self.phones.first_four, self.phones.last_four, self.dates.years, ))
-		######################
+
 		sys.stdout.write("[~] Generating passwords...\r")
 		sys.stdout.flush()
 		for generator in chain.from_iterable(mixes):
 			for pwd in generator:
 				if self.__pwd_check(pwd):
-					# print(pwd, flush=True)
 					self.total_result.append(pwd)
 					if self.verbose_mode:
 						sys.stdout.write(f"[~] Generating passwords: {pwd : <25} [N:{len(self.total_result) :_<10}]\r")
@@ -260,18 +250,12 @@ class main_ganerator:
 
 	def interface(self):
 		self.__print_banner()
-		self.names = self.names(self.__input("Any names (No spaces, comma seperated): "),
-								complicated=self.shit_level)
-		self.names.add_keywords(
-			self.__input("Any keywords like nicknames, job, movies, series... (No spaces, comma seperated): "))
-		self.dates = self.dates(
-			self.__input("Any birthdays or dates you know (Format: [dd-mm-yyyy], comma seperated): "),
-			complicated=self.shit_level)
-		self.phones = self.phones(
-			self.__input("Any phone numbers you know (Format: [+Countrycodexxx...], comma seperated): "))
-		self.old_passwords = self.old_passwords(
-			self.__input("Old passwords or words you think new passwords will be made out of it (comma seperated): "),
-			complicated=self.shit_level)
+		self.names = self.names(self.__input("Any names (No spaces, comma separated): "), complicated=self.shit_level)
+		self.nicknames = self.__input("Any nicknames (No spaces, comma separated): ")  # Added line
+		self.names.add_keywords(self.__input("Any keywords like nicknames, job, movies, series... (No spaces, comma separated): "))
+		self.dates = self.dates(self.__input("Any birthdays or dates you know (Format: [dd-mm-yyyy], comma separated): "), complicated=self.shit_level)
+		self.phones = self.phones(self.__input("Any phone numbers you know (Format: [+Countrycodexxx...], comma separated): "))
+		self.old_passwords = self.old_passwords(self.__input("Old passwords or words you think new passwords will be made out of it (comma separated): "), complicated=self.shit_level)
 		start_time = time.time()
 		try:
 			self.perms_generator()
@@ -286,10 +270,8 @@ class main_ganerator:
 				elapsed = str(round(elapsed, 2))+"m"
 			else:
 				elapsed = str(elapsed)+"s"
-			# usage in megabytes
 			print(f"[+] Elapsed time {elapsed} - Memory usage (rss:{round(process.memory_info().rss / 1024 ** 2, 2)}MB vms:{round(process.memory_info().vms / 1024 ** 2, 2)}MB)")
 			sys.exit(0)
-
 
 @click.command()
 @click.option('-l', '--level', metavar='', type=click.Choice(['0', '1', '2', '3', '4', '5']), default='0', help='Level of complication of passwords.')
