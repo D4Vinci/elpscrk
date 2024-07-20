@@ -251,7 +251,7 @@ class main_ganerator:
 	def interface(self):
 		self.__print_banner()
 		self.names = self.names(self.__input("Any names (No spaces, comma separated): "), complicated=self.shit_level)
-		self.nicknames = self.__input("Any nicknames (No spaces, comma separated): ")  # Added line
+		self.nicknames = self.__input("Any nicknames (No spaces, comma separated): ")
 		self.names.add_keywords(self.__input("Any keywords like nicknames, job, movies, series... (No spaces, comma separated): "))
 		self.dates = self.dates(self.__input("Any birthdays or dates you know (Format: [dd-mm-yyyy], comma separated): "), complicated=self.shit_level)
 		self.phones = self.phones(self.__input("Any phone numbers you know (Format: [+Countrycodexxx...], comma separated): "))
